@@ -7,6 +7,7 @@ import { ApolloServer } from "apollo-server-express";
 import { buildSchema } from "type-graphql";
 import { AuthResolver } from "./resolvers/AuthResolver";
 import { BookResolver } from "./resolvers/BookResolver";
+import { AccountResolver } from "./resolvers/AccountResolver";
 
 // I like to use redis for this: https://github.com/tj/connect-redis
 const SQLiteStore = connectSqlite3(session);
@@ -18,7 +19,7 @@ const SQLiteStore = connectSqlite3(session);
     session({
       store: new SQLiteStore({
         db: "database.sqlite",
-        concurrentDB: true
+        concurrentDB: true,
       }),
       name: "qid",
       secret: process.env.SESSION_SECRET || "aslkdfjoiq12312",
@@ -27,8 +28,8 @@ const SQLiteStore = connectSqlite3(session);
       cookie: {
         httpOnly: true,
         secure: process.env.NODE_ENV === "production",
-        maxAge: 1000 * 60 * 60 * 24 * 7 * 365 // 7 years
-      }
+        maxAge: 1000 * 60 * 60 * 24 * 7 * 365, // 7 years
+      },
     })
   );
 
@@ -40,15 +41,15 @@ const SQLiteStore = connectSqlite3(session);
 
   const apolloServer = new ApolloServer({
     schema: await buildSchema({
-      resolvers: [AuthResolver, BookResolver],
-      validate: false
+      resolvers: [AuthResolver, AccountResolver, BookResolver],
+      validate: false,
     }),
     context: ({ req, res }) => ({ req, res }),
     playground: {
       settings: {
-        "request.credentials": "include"
-      }
-    }
+        "request.credentials": "include",
+      },
+    },
   });
 
   apolloServer.applyMiddleware({ app, cors: false });

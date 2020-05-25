@@ -6,6 +6,7 @@ import { accountType } from "../custom-types/UserAccount.enum";
 @Entity()
 export class Account extends User {
   @Field()
+  @Column()
   businessName: string;
 
   @Field(() => accountType)
