@@ -8,7 +8,7 @@ import { buildSchema } from "type-graphql";
 import { AuthResolver } from "./resolvers/AuthResolver";
 import { BookResolver } from "./resolvers/BookResolver";
 import { AccountResolver } from "./resolvers/AccountResolver";
-
+import { EstimateResolver } from "./resolvers/EstimateResolver";
 // I like to use redis for this: https://github.com/tj/connect-redis
 const SQLiteStore = connectSqlite3(session);
 
@@ -41,7 +41,12 @@ const SQLiteStore = connectSqlite3(session);
 
   const apolloServer = new ApolloServer({
     schema: await buildSchema({
-      resolvers: [AuthResolver, AccountResolver, BookResolver],
+      resolvers: [
+        AuthResolver,
+        AccountResolver,
+        BookResolver,
+        EstimateResolver,
+      ],
       validate: false,
     }),
     context: ({ req, res }) => ({ req, res }),
